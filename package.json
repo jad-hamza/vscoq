@@ -1,13 +1,13 @@
 {
-  "name": "vscoq",
-  "displayName": "VSCoq",
+  "name": "vscoq-custom",
+  "displayName": "VSCoq (Custom)",
   "description": "An IDE for the Coq Proof Assistant",
   "author": {
     "name": "Christian J. Bell",
     "email": "siegebell@gmail.com",
     "url": "http://people.csail.mit.edu/cj/"
   },
-  "version": "0.3.3",
+  "version": "1.0.0",
   "publisher": "maximedenes",
   "license": "MIT",
   "icon": "images/logo.png",

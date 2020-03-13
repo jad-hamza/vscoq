@@ -49,14 +49,33 @@ export class Highlights {
     this.applyCurrent(editors);
   }
 
+  private setDecorations(editor: TextEditor, decorationType: vscode.TextEditorDecorationType, decorationTypeLine: vscode.TextEditorDecorationType, ranges: vscode.Range[]): void {
+    let wholeLines = []
+    let incompleteLines = []
+
+    for (let range of ranges) {
+      if (range.end.character >= editor.document.lineAt(range.end.line).range.end.character) {
+        wholeLines.push(range)
+      } else if (range.start.line == range.end.line) {
+        incompleteLines.push(range)
+      } else {
+        wholeLines.push(new vscode.Range(range.start, editor.document.lineAt(range.end.line - 1).range.end));
+        incompleteLines.push(new vscode.Range(range.end.line, 0, range.end.line, range.end.character))
+      }
+    }
+
+    editor.setDecorations(decorationTypeLine, wholeLines);
+    editor.setDecorations(decorationType, incompleteLines);
+  }
+
   private applyCurrent(editors: Iterable<TextEditor>) {
     for(let editor of editors) {
       editor.setDecorations(decorations.stateError , this.current.ranges[proto.HighlightType.StateError]);
-      editor.setDecorations(decorations.parsing    , this.current.ranges[proto.HighlightType.Parsing]);
-      editor.setDecorations(decorations.processing , this.current.ranges[proto.HighlightType.Processing]);
+      this.setDecorations(editor, decorations.processing, decorations.processingLine, this.current.ranges[proto.HighlightType.Parsing]);
+      this.setDecorations(editor, decorations.processing, decorations.processingLine, this.current.ranges[proto.HighlightType.Processing]);
       editor.setDecorations(decorations.incomplete , this.current.ranges[proto.HighlightType.Incomplete]);
       editor.setDecorations(decorations.axiom      , this.current.ranges[proto.HighlightType.Axiom]);
-      editor.setDecorations(decorations.processed  , this.current.ranges[proto.HighlightType.Processed]); 
+      this.setDecorations(editor, decorations.processed, decorations.processedLine, this.current.ranges[proto.HighlightType.Processed]);
     }
   }
 

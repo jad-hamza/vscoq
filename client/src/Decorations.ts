@@ -6,10 +6,11 @@ const STM_FOCUS_IMAGE_BEFORE = "out/images/stm-focus-before.svg";
 const STM_FOCUS_IMAGE_PROOF_VIEW = "out/images/stm-focus-proof-view.svg";
 
 interface DecorationsInternal extends Decorations {
-  parsing: vscode.TextEditorDecorationType;
   processing: vscode.TextEditorDecorationType;
+  processingLine: vscode.TextEditorDecorationType;
   stateError: vscode.TextEditorDecorationType;
   processed: vscode.TextEditorDecorationType
+  processedLine: vscode.TextEditorDecorationType
   incomplete: vscode.TextEditorDecorationType; // Example: a Qed. whose proof failed.
   axiom: vscode.TextEditorDecorationType;
   focus : vscode.TextEditorDecorationType;
@@ -29,39 +30,32 @@ export function initializeDecorations(context: vscode.ExtensionContext) {
     context.subscriptions.push(result);
     return result;
   }
+
+  const processingOptions = {
+    overviewRulerColor: 'rgb(134, 60, 0)',
+    overviewRulerLane: vscode.OverviewRulerLane.Center,
+    light: {backgroundColor: 'rgba(0,0,255,0.3)'},
+    dark: {backgroundColor: 'rgba(134, 60, 0, 0.9)'},
+  }
+
+  const processedOptions = {
+    overviewRulerColor: 'rgb(20, 60, 80)',
+    overviewRulerLane: vscode.OverviewRulerLane.Center,
+    light: {backgroundColor: 'rgba(0,150,0,0.2)'},
+    dark: {backgroundColor: 'rgba(20, 60, 80, 0.8)'},
+  }
+
   decorationsInternal = {
-    parsing: create({
-      outlineWidth: '1px',
-      outlineStyle: 'solid', 
-      overviewRulerColor: 'cyan', 
-      overviewRulerLane: vscode.OverviewRulerLane.Right,
-      light: {outlineColor: 'rgba(32, 165, 218,0.7)', backgroundColor: 'rgba(0, 255, 255, 0.2)'},
-      dark: {outlineColor: 'rgba(32, 165, 218,0.7)', backgroundColor: 'rgba(0, 255, 255, 0.2)'},
-    }),
-    processing: create({
-      overviewRulerColor: 'blue', 
-      overviewRulerLane: vscode.OverviewRulerLane.Center,
-      light: {backgroundColor: 'rgba(0,0,255,0.3)'},
-      dark: {backgroundColor: 'rgba(0,0,255,0.3)'},
-    }),
+    processing: create(processingOptions),
+    processingLine: create(Object.assign({}, processingOptions, { isWholeLine: true })),
     stateError: create({
-      borderWidth: '1px',
-      borderStyle: 'solid', 
       light:
-        { borderColor: 'rgba(255,0,0,0.5)'
-        , backgroundColor: 'rgba(255,0,0,0.25)'
-        },
+        { backgroundColor: 'rgba(255,0,0,0.25)' },
       dark:
-        {borderColor: 'rgba(255,0,0,0.5)'
-        , backgroundColor: 'rgba(255,0,0,0.25)'
-        },
+        { backgroundColor: 'rgba(255,0,0,0.25)' },
     }),
-    processed: create({
-      overviewRulerColor: 'green', 
-      overviewRulerLane: vscode.OverviewRulerLane.Center,
-      light: {backgroundColor: 'rgba(0,150,0,0.2)'},
-      dark: {backgroundColor: 'rgba(0,150,0,0.2)'},
-    }),
+    processed: create(processedOptions),
+    processedLine: create(Object.assign({}, processedOptions, { isWholeLine: true })),
     axiom: create({
       overviewRulerColor: 'yellow',
       overviewRulerLane: vscode.OverviewRulerLane.Center,
